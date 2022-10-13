@@ -29,7 +29,10 @@ export function activate(context: vscode.ExtensionContext) {
                 ])
             )
         },
-        () => 50
+        () =>
+            vscode.workspace
+                .getConfiguration('hoverlens')
+                .get('debounceUpdate', 50)
     )
 
     context.subscriptions.push(
