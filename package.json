@@ -1,6 +1,6 @@
 {
   "name": "hoverlens",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "NonSpicyBurrito",
   "engines": {
     "vscode": "^1.71.0"
@@ -19,7 +19,23 @@
     "url": "https://github.com/NonSpicyBurrito/hoverlens.git"
   },
   "main": "./dist/extension.js",
-  "contributes": {},
+  "contributes": {
+    "configuration": {
+      "title": "Hover Lens",
+      "properties": {
+        "hoverlens.maximumCursorCount": {
+          "description": "Maximum cursor count which hover information will be displayed (set to 0 for unlimited).\nDisplaying hover information for too many cursors may degrade editor performance.",
+          "type": "number",
+          "default": 3
+        },
+        "hoverlens.debounceUpdate": {
+          "description": "Debounce hover information update (set to 0 for no debounce).\nUpdating hover information too quickly may degrade editor performance.",
+          "type": "number",
+          "default": 50
+        }
+      }
+    }
+  },
   "activationEvents": [
     "onStartupFinished"
   ],

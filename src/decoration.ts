@@ -11,6 +11,11 @@ export async function getDecorations(
 ) {
     if (!selections.length) return []
 
+    const maxCount = vscode.workspace
+        .getConfiguration('hoverlens')
+        .get('maximumCursorCount', 3)
+    if (maxCount > 0 && selections.length > maxCount) return []
+
     const positions = selections
         .map((selection) => selection.active)
         .sort((a, b) => b.line - a.line || b.character - a.character)
