@@ -10,6 +10,7 @@ export async function getDecorations(
     selections: readonly vscode.Selection[]
 ) {
     if (!selections.length) return []
+    if (selections.length > 3) return []
 
     const positions = selections
         .map((selection) => selection.active)
