@@ -10,7 +10,11 @@ export async function getDecorations(
     selections: readonly vscode.Selection[]
 ) {
     if (!selections.length) return []
-    if (selections.length > 3) return []
+
+    const maxCount = vscode.workspace
+        .getConfiguration('hoverlens')
+        .get('maximumCursorCount', 3)
+    if (maxCount > 0 && selections.length > maxCount) return []
 
     const positions = selections
         .map((selection) => selection.active)

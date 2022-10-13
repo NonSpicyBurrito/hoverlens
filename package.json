@@ -19,7 +19,18 @@
     "url": "https://github.com/NonSpicyBurrito/hoverlens.git"
   },
   "main": "./dist/extension.js",
-  "contributes": {},
+  "contributes": {
+    "configuration": {
+      "title": "Hover Lens",
+      "properties": {
+        "hoverlens.maximumCursorCount": {
+          "description": "Maximum cursor count which hover information will be displayed (set to 0 for unlimited).\nDisplaying hover information for too many cursors may degrade editor performance.",
+          "type": "number",
+          "default": 3
+        }
+      }
+    }
+  },
   "activationEvents": [
     "onStartupFinished"
   ],
