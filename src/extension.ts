@@ -18,9 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
             )
             if (token.isCancellationRequested) return
 
-            currentDecorations.forEach(([editor, type]) =>
-                editor.setDecorations(type, [])
-            )
+            currentDecorations.forEach(([, type]) => type.dispose())
 
             currentDecorations = decorations
             currentDecorations.forEach(([editor, type, line]) =>
