@@ -32,6 +32,11 @@
           "description": "Debounce hover information update (set to 0 for no debounce).\nUpdating hover information too quickly may degrade editor performance.",
           "type": "number",
           "default": 50
+        },
+        "hoverlens.maximumShiftCount": {
+          "description": "Maximum character count which multiline hover information is allowed to be shifted to avoid being cut off.",
+          "type": "number",
+          "default": 40
         }
       }
     }
