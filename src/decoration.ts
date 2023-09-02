@@ -33,6 +33,10 @@ export async function getDecorations(
         hovers.map(toPlainText).map(removeEmptyLines).join('\n').split('\n')
     )
 
+    const maxShift = vscode.workspace
+        .getConfiguration('hoverlens')
+        .get('maximumShiftCount', 20)
+
     const layouts = positions.map((position, i) => {
         const paddings: number[] = []
 
@@ -41,7 +45,8 @@ export async function getDecorations(
             position.line
         const count = Math.min(lines[i].length, space)
 
-        const startLineLength = getLineLength(position.line)
+        const startLineLength =
+            getLineLength(position.line) + Math.max(maxShift, 0)
         for (let i = 0; i < count; i++) {
             const lineLength = getLineLength(position.line + i)
             if (lineLength > startLineLength) break
@@ -49,7 +54,8 @@ export async function getDecorations(
             paddings.push(startLineLength - lineLength)
         }
 
-        return paddings
+        const min = Math.min(...paddings)
+        return paddings.map((padding) => padding - min)
     })
 
     const texts = layouts.map((paddings, i) => {

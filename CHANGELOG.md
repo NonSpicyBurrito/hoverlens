@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.0]
+
+-   Added shifting multiline hover information
+
 ## [1.1.1]
 
 -   Fixed memory leak due to undisposed decoration types
