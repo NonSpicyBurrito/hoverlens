@@ -1,6 +1,6 @@
 {
   "name": "hoverlens",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "publisher": "NonSpicyBurrito",
   "engines": {
     "vscode": "^1.71.0"
