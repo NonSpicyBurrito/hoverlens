@@ -23,6 +23,11 @@
     "configuration": {
       "title": "Hover Lens",
       "properties": {
+        "hoverlens.enabled": {
+          "description": "Whether Hover Lens is enabled or not.",
+          "type": "boolean",
+          "default": true
+        },
         "hoverlens.maximumCursorCount": {
           "description": "Maximum cursor count which hover information will be displayed (set to 0 for unlimited).\nDisplaying hover information for too many cursors may degrade editor performance.",
           "type": "number",

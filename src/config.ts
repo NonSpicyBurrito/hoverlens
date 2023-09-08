@@ -1,5 +1,8 @@
 import * as vscode from 'vscode'
 
+export const getEnabled = () =>
+    vscode.workspace.getConfiguration('hoverlens').get('enabled', true)
+
 export const getMaxCount = () =>
     vscode.workspace.getConfiguration('hoverlens').get('maximumCursorCount', 3)
 

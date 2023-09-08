@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { Decoration, getDecorations } from './decoration'
 import { debounce } from './utils'
-import { getDebounceUpdate } from './config'
+import { getDebounceUpdate, getEnabled } from './config'
 
 let tokenSource: vscode.CancellationTokenSource | undefined
 const startUpdate = () => {
@@ -25,6 +25,8 @@ const setDecorations = (decorations: Decoration[]) => {
 
 const updateDecorations = debounce(
     async (event: vscode.TextEditorSelectionChangeEvent) => {
+        if (!getEnabled()) return
+
         const token = startUpdate()
 
         const decorations = await getDecorations(
@@ -39,6 +41,15 @@ const updateDecorations = debounce(
 )
 
 export const activate = (context: vscode.ExtensionContext) => {
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration(() => {
+            if (getEnabled()) return
+
+            cancelUpdate()
+            setDecorations([])
+        })
+    )
+
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection((event) => {
             cancelUpdate()
