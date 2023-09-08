@@ -4,16 +4,21 @@ import {
     removeEmptyLines,
     toPlainText,
 } from './formatting'
+import { getMaxCount, getMaxShift } from './config'
 
-export async function getDecorations(
+export type Decoration = {
+    editor: vscode.TextEditor
+    type: vscode.TextEditorDecorationType
+    line: number
+}
+
+export const getDecorations = async (
     editor: vscode.TextEditor,
     selections: readonly vscode.Selection[]
-) {
+) => {
     if (!selections.length) return []
 
-    const maxCount = vscode.workspace
-        .getConfiguration('hoverlens')
-        .get('maximumCursorCount', 3)
+    const maxCount = getMaxCount()
     if (maxCount > 0 && selections.length > maxCount) return []
 
     const positions = selections
@@ -33,9 +38,10 @@ export async function getDecorations(
         hovers.map(toPlainText).map(removeEmptyLines).join('\n').split('\n')
     )
 
-    const maxShift = vscode.workspace
-        .getConfiguration('hoverlens')
-        .get('maximumShiftCount', 20)
+    const maxShift = getMaxShift()
+
+    const getLineLength = (line: number) =>
+        editor.document.lineAt(line).range.end.character
 
     const layouts = positions.map((position, i) => {
         const paddings: number[] = []
@@ -67,26 +73,17 @@ export async function getDecorations(
         return texts
     })
 
-    return layouts
-        .map((paddings, i) =>
-            paddings.map(
-                (padding, j) =>
-                    [
-                        editor,
-                        createDecorationType(texts[i][j], padding),
-                        positions[i].line + j,
-                    ] as const
-            )
-        )
-        .flat()
-
-    function getLineLength(line: number) {
-        return editor.document.lineAt(line).range.end.character
-    }
+    return layouts.flatMap((paddings, i) =>
+        paddings.map((padding, j) => ({
+            editor,
+            type: createDecorationType(texts[i][j], padding),
+            line: positions[i].line + j,
+        }))
+    )
 }
 
-function createDecorationType(text: string, padding: number) {
-    return vscode.window.createTextEditorDecorationType({
+const createDecorationType = (text: string, padding: number) =>
+    vscode.window.createTextEditorDecorationType({
         after: {
             contentText: changeLeadingSpacesToNonBreaking(
                 ' '.repeat(padding) + text
@@ -97,4 +94,3 @@ function createDecorationType(text: string, padding: number) {
 
         isWholeLine: true,
     })
-}

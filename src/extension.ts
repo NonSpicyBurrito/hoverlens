@@ -1,41 +1,47 @@
 import * as vscode from 'vscode'
-import { getDecorations } from './decoration'
+import { Decoration, getDecorations } from './decoration'
 import { debounce } from './utils'
+import { getDebounceUpdate } from './config'
 
-export function activate(context: vscode.ExtensionContext) {
-    let tokenSource: vscode.CancellationTokenSource
+let tokenSource: vscode.CancellationTokenSource | undefined
+const startUpdate = () => {
+    tokenSource = new vscode.CancellationTokenSource()
+    return tokenSource.token
+}
+const cancelUpdate = () => tokenSource?.cancel()
 
-    let currentDecorations: Awaited<ReturnType<typeof getDecorations>> = []
+let currentDecorations: Decoration[] = []
+const setDecorations = (decorations: Decoration[]) => {
+    for (const { type } of currentDecorations) {
+        type.dispose()
+    }
 
-    const updateDecorations = debounce(
-        async (event: vscode.TextEditorSelectionChangeEvent) => {
-            tokenSource = new vscode.CancellationTokenSource()
+    currentDecorations = decorations
 
-            const token = tokenSource.token
-            const decorations = await getDecorations(
-                event.textEditor,
-                event.selections
-            )
-            if (token.isCancellationRequested) return
+    for (const { editor, type, line } of currentDecorations) {
+        editor.setDecorations(type, [new vscode.Selection(line, 0, line, 0)])
+    }
+}
 
-            currentDecorations.forEach(([, type]) => type.dispose())
+const updateDecorations = debounce(
+    async (event: vscode.TextEditorSelectionChangeEvent) => {
+        const token = startUpdate()
 
-            currentDecorations = decorations
-            currentDecorations.forEach(([editor, type, line]) =>
-                editor.setDecorations(type, [
-                    new vscode.Selection(line, 0, line, 0),
-                ])
-            )
-        },
-        () =>
-            vscode.workspace
-                .getConfiguration('hoverlens')
-                .get('debounceUpdate', 50)
-    )
+        const decorations = await getDecorations(
+            event.textEditor,
+            event.selections
+        )
+        if (token.isCancellationRequested) return
 
+        setDecorations(decorations)
+    },
+    getDebounceUpdate
+)
+
+export const activate = (context: vscode.ExtensionContext) => {
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection((event) => {
-            tokenSource?.cancel()
+            cancelUpdate()
             updateDecorations(event)
         })
     )
