@@ -1,6 +1,6 @@
 {
   "name": "hoverlens",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "publisher": "NonSpicyBurrito",
   "engines": {
     "vscode": "^1.71.0"
@@ -23,6 +23,11 @@
     "configuration": {
       "title": "Hover Lens",
       "properties": {
+        "hoverlens.enabled": {
+          "description": "Whether Hover Lens is enabled or not.",
+          "type": "boolean",
+          "default": true
+        },
         "hoverlens.maximumCursorCount": {
           "description": "Maximum cursor count which hover information will be displayed (set to 0 for unlimited).\nDisplaying hover information for too many cursors may degrade editor performance.",
           "type": "number",

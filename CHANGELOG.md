@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.0]
+
+-   Added enabled
+
 ## [1.2.0]
 
 -   Added shifting multiline hover information

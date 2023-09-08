@@ -1,8 +1,9 @@
-export function debounce<T extends (...args: never[]) => unknown>(
+export const debounce = <T extends (...args: never[]) => unknown>(
     fn: T,
     getMs: () => number
-) {
+) => {
     let timer: NodeJS.Timeout
+
     return (...args: Parameters<T>) => {
         clearTimeout(timer)
 
