@@ -40,8 +40,16 @@ export const getDecorations = async (
 
     const maxShift = getMaxShift()
 
-    const getLineLength = (line: number) =>
-        editor.document.lineAt(line).range.end.character
+    const tabWidth = editor.options.tabSize as number
+
+    const getLineLength = (line: number) => {
+        let length = 0
+        for (const c of editor.document.lineAt(line).text) {
+            length += c === '\t' ? tabWidth : 1
+        }
+
+        return length
+    }
 
     const layouts = positions.map((position, i) => {
         const paddings: number[] = []
